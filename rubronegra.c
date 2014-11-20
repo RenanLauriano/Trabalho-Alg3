@@ -43,6 +43,18 @@ no *maximum (no *x)
     return maximum (x -> dir);
 }
 
+no* sucessor(no* p){
+	no* y = malloc(sizeof(no*));
+	if(p->dir == NULL)
+		return minimum(p->dir);
+	y = p->pai;
+	while((y != NULL) && (p ==  y->dir)){
+		p = y;
+		y = y->pai;
+	}
+	return y;
+}
+
 /*
  * Rotaciona a arvore para a esqueda
  */
@@ -418,7 +430,7 @@ char *rn_remove(arv *t, char *chave)
 
    }
    else
-	   if(y == y->pai_esq)
+	   if(y == y->pai->esq)
 		   y->pai->esq = x;
 	   else
 		   y->pai->dir = x;
