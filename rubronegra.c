@@ -128,7 +128,7 @@ void rn_lista_conteudo_em(no* t){
 }
 
 void rn_lista_conteudo(arv* t){
-    rn_lista_conteudo_em(t->raiz);   
+    rn_lista_conteudo_em(t->raiz);
 }
 
 
@@ -174,8 +174,8 @@ void rn_lista_estrutura_pre(no* t){
 
 void rn_lista_estrutura(arv *t){
     if(t->raiz != NULL)
-        rn_lista_estrutura_pre(t->raiz);   
-   
+        rn_lista_estrutura_pre(t->raiz);
+
 }
 
 
@@ -197,7 +197,7 @@ char* rn_busca(arv* t, char* chave){
     if(t->raiz == NULL)
         return NULL;
     return rn_busca_no(t->raiz, chave);
-   
+
 }
 
 
@@ -405,91 +405,36 @@ char *rn_remove(arv *t, char *chave)
         return NULL;
 
     if((p->esq = t->nil) || (p->dir == t->nil))
-        y  =p;   
+        y = p;
     else
-       
+    	y = sucessor(p);
+   if(y->esq != t->nil)
+   	   x = y->esq;
+   else
+	   x = y->dir;
+   x->pai = y->pai;
+   if(y->pai == t->nil){
+	   t->raiz = x;
 
+   }
+   else
+	   if(y == y->pai_esq)
+		   y->pai->esq = x;
+	   else
+		   y->pai->dir = x;
+   if(y != p){
+	   strcpy(p->chave, y->chave);
+	   strcpy(p->conteudo, y->conteudo);
+	   p->pai = y->pai;
+	   p->dir = y->dir;
+	   p->esq = y->esq;
+   }
+   if(y->cor == BLACK)
+	   rn_remove_fixup(t, x);
+   return p->conteudo;
 
-    no *x = malloc (sizeof(no));
-    no *y = malloc (sizeof(no));
-    no *z = malloc (sizeof(no));
-    int cor_y;
-    z = busca_remove (t -> raiz, chave);        //Busca o no com a chave a ser removida
-    if (z != NULL)                    //Se o no existe
-    {
-        y = z;                    //y aponta para o no a ser removido
-        cor_y = y -> cor;            //cor_y recebe a cor de z
-        if (z -> esq == t -> nil)        //Se z nao tiver filho a esquerda
-        {
-            x = z -> dir;            //x aponta para seu filho a direita
-            rn_transplant (t, z, z -> dir);    //Troca z com seu filho a direita
-        }
-        else
-        {
-            if (z -> dir == t -> nil)    //Se z nao tiver filho a direita
-            {
-                x = z -> esq;        //x aponta para seu filho a esquerda
-                rn_transplant (t, z, z -> esq);    //Troca z com seu filho a esquerda
-            }
-            else
-            {
-                y = minimum (z -> dir);        //y aponta para o sucessor de z
-                cor_y = y -> cor;        //cor_y recebe a cor do sucessor de z
-                x = y -> dir;            //x aponta para o filho a direita do sucessor de z
-                if (y -> pai == z)        //Se o pai do sucessor for z
-                    x -> pai = y;        //y se torna pai de x
-                else
-                {
-                    rn_transplant (t, y, y -> dir);    //Troca o sucessor com seu filho a direita
-                    y -> dir = z -> dir;        //
-                    y -> dir -> pai = y;
-                }
-                rn_transplant (t, z, y);
-                y -> esq = z -> esq;
-                y -> esq -> pai = y;
-                y -> cor = z -> cor;
-            }
-            if (cor_y == BLACK)
-                rn_remove_fixup (t, x);
-            return z -> conteudo;
-        }
-        return NULL;
-    }
 }
-/*
-int main() {
-  char buffer_chave[257];
-  char buffer_conteudo[4097];
-  char *chave, *conteudo;
-  char eof;
-  arv *t;
 
-  t = rn_cria_arvore();
-
-  eof = getc(stdin);
-  while(eof != EOF) {
-    ungetc(eof, stdin);
-    fgets(buffer_chave, 257, stdin);
-    buffer_chave[strlen(buffer_chave) - 1] = '\0'; /* apaga o \n no final
-    fgets(buffer_conteudo, 4097, stdin);
-    buffer_conteudo[strlen(buffer_conteudo) - 1] = '\0';
-    chave = strdup(buffer_chave);
-    conteudo = strdup(buffer_conteudo);
-    rn_insere(t, chave, conteudo);
-    eof = getc(stdin);
-  }
- 
-  printf("buscando o conteudo da chave teste: %s\n",
-     rn_busca(t -> raiz, "teste"));
- 
-  printf("removendo a chave teste e seu conteudo: %s\n",
-     rn_remove(t, "teste"));
- 
-  rn_lista_conteudo(t -> raiz);
-
-  rn_lista_estrutura(t -> raiz);
-
-}*/
 
 int main() {
   char buffer_chave[257];
@@ -512,13 +457,13 @@ int main() {
     rn_insere(t, chave, conteudo);
     eof = getc(stdin);
   }
- 
+
   printf("buscando o conteudo da chave teste: %s\n",
      rn_busca(t, "teste"));
- 
+
   printf("removendo a chave teste e seu conteudo: %s\n",
      rn_remove(t, "teste"));
- 
+
   rn_lista_conteudo(t);
 
   rn_lista_estrutura(t);
