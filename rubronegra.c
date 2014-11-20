@@ -209,59 +209,49 @@ arv *rn_cria_arvore ()
  */
 void rn_insere_fixup (arv *t, no *z)
 {
-	no *y;
-//	if (z != t -> raiz)	//Se o no for raiz, so pinta raiz de preto
-//	{
-		while (z != t -> raiz && z -> pai -> cor == RED)	//Enquanto a cor do pai de z for vermelha 
-		{
-			if (z -> pai == z -> pai -> pai -> esq)	//CASO 1: Se o pai de z eh filho a esquerda de seu avo
-			{
-				y = z -> pai -> pai -> dir;	//y aponta para o tio de z
-				if (y -> cor == RED)		//Se o tio for vermelho
-				{
-					z -> pai -> cor = BLACK;	//Pinta o pai de z de preto
-					y -> cor = BLACK;		//Pinta z de preto
-					z -> pai -> pai -> cor = RED;	//Pinta o avo de z de vermelho
-					z = z -> pai -> pai;	//z aponta para o avo
-				}
-				else
-				{
-					if (z == z -> pai -> dir)	//CASO 2: Se z eh filho a direita
-					{
-						z = z -> pai;		//z aponta para seu pai
-						leftRotate (t, z);	//Faz rotacao a esquerda no pai de z
-					}
-					z -> pai -> cor = BLACK;	//CASO 3: Pinta o pai de z de preto
-					z -> pai -> pai -> cor = RED;	//Pinta o avo de z de vermelho
-					rightRotate (t, z -> pai -> pai);	//Faz rotacao a direita no avo de z
-				}
+	no* y = malloc(sizeof(no*));
+	no* x = malloc(sizeof(no*));
+	while(z->pai == RED){
+		if(z->pai == z->pai->pai->esq){
+			y = z->pai->pai->dir;
+			if(y->cor == RED){
+				z->pai->cor = BLACK;
+				y->cor = BLACK; // tio
+				z->pai->pai->cor = RED;
+				z = z->pai->pai;
+
 			}
 			else
-			{
-				y = z -> pai -> pai -> esq;	//y aponta para o tio de z
-				if (y -> cor == RED)		//Se o tio for vermelho
-				{
-					z -> pai -> cor = BLACK;	//Pinta o pai de z de preto
-					y -> cor = BLACK;		//Pinta z de preto
-					z -> pai -> pai -> cor = RED;	//Pinta o avo de z de vermelho
-					z = z -> pai -> pai;	//z aponta para o avo
+				if(z == z->pai->dir){
+					z = z->pai;
+					leftRotate(t, z);
 				}
-				else
-				{
-					if (z == z -> pai -> esq)	//CASO 2: Se z eh filho a direita
-					{
-						z = z -> pai;		//z aponta para seu pai
-						rightRotate (t, z);	//Faz rotacao a esquerda no pai de z
-					}
-					z -> pai -> cor = BLACK;	//CASO 3: Pinta o pai de z de preto
-					z -> pai -> pai -> cor = RED;	//Pinta o avo de z de vermelho
-					leftRotate (t, z -> pai -> pai);	//Faz rotacao a direita no avo de z
-				}
-			}
+				z->pai->cor = BLACK;
+				z->pai->pai->cor = RED;
+				rightRotate(t, z->pai->pai);
 		}
-//	}
-	t -> raiz -> cor = BLACK;	//Pinta raiz de preto
+		else{
+			y = z->pai->pai->esq;
+			if(y->cor == RED){
+				z->pai->cor = BLACK;
+				y->cor = BLACK; // tio
+				z->pai->pai->cor = RED;
+				z = z->pai->pai;
+
+			}
+			else
+				if(z == z->pai->esq){
+					z = z->pai;
+					leftRotate(t, z);
+				}
+				z->pai->cor = BLACK;
+				z->pai->pai->cor = RED;
+				rightRotate(t, z->pai->pai);
+		}
+	}
+	t->raiz->cor = BLACK;
 }
+
 no* busca_no(no* p, char* chave){
 	if((p == NULL) || (strcmp(t->chave, chave) == 0))
 		return p;
