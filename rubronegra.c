@@ -262,7 +262,13 @@ void rn_insere_fixup (arv *t, no *z)
 //	}
 	t -> raiz -> cor = BLACK;	//Pinta raiz de preto
 }
-
+no* busca_no(no* p, char* chave){
+	if((p == NULL) || (strcmp(t->chave, chave) == 0))
+		return p;
+	if(strcmp(chave, p->chave) == -1)
+		return rn_busca(p->esq, chave);
+	return rn_busca(p->dir, chave);
+}
 /*
  * Insere um no na arvore
  */
@@ -271,6 +277,8 @@ char *rn_insere (arv *t, char *chave, char *conteudo)
 	no *y = t->nil;
 	no *x = t->raiz;
 	no *p = malloc(sizeof(no*));
+	if(busca_no(t->raiz, chave) == NULL)
+		return NULL;
 	strcpy(p->chave, chave);
 	strcpy(p->conteudo, conteudo);
 	while(x != t->nil){
